@@ -434,18 +434,19 @@ else addEventListener("load",()=>setTimeout(load,50),{once:true});
 // Rays and candle are moved with transforms only, so nothing large is repainted per frame.
 (()=>{
 const raysEl=$("#rays"),top=$("#candleTop");
-const body=$("#pBody"),wick=$("#pWick"),tagBg=$("#pTagBg"),tagText=$("#pTagText");
+const body=$("#pBody"),wick=$("#pWick"),tag=$("#pTag"),tagBg=$("#pTagBg"),tagText=$("#pTagText");
 const glowStop=$("#pGlowStop"),glowEnd=glowStop.nextElementSibling;
 const UP=[62,224,143],DOWN=[255,92,122];
 let w=0,h=0,left=0,docTop=0,offX=0,offY=0,maxX=0,x=0,y=0,tx=null,ty=null,frame=0,inView=true;
-let trend=1,lastX=0,lastPct="",lastOp="",lastLook="";
+let trend=1,lastX=0,lastPct="",lastOp="",lastLook="",tagLeft=false,edgeX=0;
 const t0=performance.now();
 
 const measureFx=()=>{
 const r=heroFx.getBoundingClientRect(),hr=hero.getBoundingClientRect();
 w=r.width;h=r.height;left=r.left;docTop=r.top+scrollY;
 offX=r.left-hr.left;offY=r.top-hr.top;
-maxX=hr.right-r.left-110;
+maxX=hr.right-r.left-24;
+edgeX=hr.right-r.left-110;
 };
 const idle=t=>[w*.64+Math.sin(t*.35)*w*.07,h*.8+Math.sin(t*.6)*h*.05];
 const mix=k=>UP.map((u,i)=>Math.round(DOWN[i]+(u-DOWN[i])*k)).join(",");
@@ -473,6 +474,10 @@ glowStop.setAttribute("stop-color",rgb);
 glowEnd.setAttribute("stop-color",rgb);
 }
 
+// near the right edge the tag flips to the candle's left so it never gets cut off
+const flip=x>edgeX;
+if(flip!==tagLeft){tagLeft=flip;tag.setAttribute("transform",flip?"translate(-90 -32)":"translate(20 -32)")}
+
 const pct=((x/w-.5)*10).toFixed(2);
 if(pct!==lastPct){
 lastPct=pct;
@@ -488,7 +493,7 @@ x+=((tx??ix)-x)*.3;
 y+=((ty??iy)-y)*.3;
 const dx=x-lastX;
 lastX=x;
-if(Math.abs(dx)>.3)trend+=(clamp(dx/3,-1,1)-trend)*.15;
+if(Math.abs(dx)>.3)trend+=(Math.sign(dx)-trend)*.2;
 render();
 run();
 };
@@ -502,9 +507,34 @@ addEventListener("resize",measureFx);
 document.addEventListener("visibilitychange",run);
 new IntersectionObserver(([e])=>{inView=e.isIntersecting;if(inView){measureFx();run()}}).observe(hero);
 
+const aim=e=>{tx=clamp(e.clientX-left,w*.02,maxX);ty=clamp(e.clientY+scrollY-docTop,40,h-40)};
+
 if(finePointer&&!reduceMotion){
-hero.addEventListener("pointermove",e=>{tx=Math.min(e.clientX-left,maxX);ty=e.clientY+scrollY-docTop});
+hero.addEventListener("pointermove",aim);
 hero.addEventListener("pointerleave",()=>{tx=ty=null});
+}else if(!reduceMotion){
+// touch: grab the candle to drag it; anywhere else still scrolls the page
+const hit=$("#pHit");
+let dragging=false,release=0;
+top.classList.add("hint");
+hit.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+hit.addEventListener("pointerdown",e=>{
+dragging=true;
+clearTimeout(release);
+top.classList.remove("hint");
+hit.setPointerCapture(e.pointerId);
+measureFx();
+aim(e);
+run();
+});
+hit.addEventListener("pointermove",e=>{if(dragging)aim(e)});
+const drop=()=>{
+if(!dragging)return;
+dragging=false;
+release=setTimeout(()=>{tx=ty=null},2500);
+};
+hit.addEventListener("pointerup",drop);
+hit.addEventListener("pointercancel",drop);
 }
 run();
 })();

@@ -527,6 +527,15 @@ animation:bob var(--dur) ease-in-out infinite alternate;
 .rays .beam-in{right:10px;width:2200px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5) 55%,rgba(255,255,255,.9))}
 #pTagText{font-family:var(--mono);font-size:11px;font-weight:700;fill:#03060f}
 #pTagBg{fill-opacity:.95}
+#pHit{fill:transparent;pointer-events:none}
+#pRing{fill:none;stroke:#fff;stroke-width:1.5;opacity:0;pointer-events:none}
+
+/* touch screens: the candle can be grabbed and dragged (only the candle, so scrolling still works) */
+@media (hover:none){
+#pHit{pointer-events:auto;touch-action:none;cursor:grab}
+.candle-top.hint #pRing{animation:ring 1.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+}
+@keyframes ring{0%{opacity:.7;transform:scale(.6)}100%{opacity:0;transform:scale(1.5)}}
 .candle-top{
 position:absolute;
 left:0;
