@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PROFIT+ | Trading Bootcamp</title>
-<meta name="description" content="PROFIT+ by FEC IIT Guwahati: a free, beginner-friendly 6 day trading course with certificate. Starting 28th Sept.">
+<meta name="description" content="PROFIT+ by FEC IIT Guwahati: a free, beginner-friendly 6 day trading course with certificate, open to all. Starting 28th Sept.">
 <meta name="theme-color" content="#03060f">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PROFIT+ | Free 6 Day Trading Course">
@@ -18,8 +18,12 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="index.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
+</script>
 <script>document.documentElement.classList.add("js")</script>
 <script defer src="index.js"></script>
 </head>
@@ -33,6 +37,7 @@
 </div>
 
 <header>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 <nav>
 <a class="logo" href="#top" aria-label="PROFIT+ home">
 <img src="assets/fec-mark.png" alt="" width="14" height="29">
@@ -50,32 +55,78 @@
 
 <main id="top">
 
-<section class="hero">
-<div class="hero-text reveal">
-<p class="badge"><img src="assets/fec-wordmark.png" alt="Finance and Economics Club, IIT Guwahati" width="150" height="24"></p>
-<p class="tag">FEC IITG's first-ever, beginner-friendly <b>free</b> trading course</p>
-<h1>PROFIT<sup>+</sup></h1>
-<h2>6 DAY COURSE <span>+ Certificate</span></h2>
-<p class="lead">
+<section class="hero" id="hero">
+
+<div class="hero-fx" aria-hidden="true">
+<span class="beam" style="--r:-9deg;--t:38%;--c:#4d8bff;--dur:9s"></span>
+<span class="beam" style="--r:-16deg;--t:62%;--c:#9cc1ff;--dur:12s;--delay:-4s"></span>
+<span class="beam thick" style="--r:14deg;--t:88%;--c:#5cc85a;--dur:14s;--delay:-7s"></span>
+
+<svg class="shape" style="--x:3%;--y:5%;--k:.35;--dur:16s" width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="25" fill="none" stroke="#4d8bff" stroke-width="1.5"/></svg>
+<svg class="shape" style="--x:44%;--y:78%;--k:.6;--dur:20s" width="80" height="80" viewBox="0 0 80 80"><path d="M40 4l6 9 10-4 1 11 11 2-4 10 9 7-9 7 4 10-11 2-1 11-10-4-6 9-6-9-10 4-1-11-11-2 4-10-9-7 9-7-4-10 11-2 1-11 10 4z" fill="none" stroke="#2f6bff" stroke-width="1.5"/></svg>
+<svg class="shape" style="--x:90%;--y:12%;--k:.25;--dur:18s" width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="21" fill="none" stroke="#ff5c7a" stroke-width="1.5"/></svg>
+<svg class="shape" style="--x:95%;--y:70%;--k:.5;--dur:22s" width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#9cc1ff" stroke-width="1.5"/></svg>
+<svg class="shape" style="--x:58%;--y:8%;--k:.45;--dur:17s" width="34" height="34" viewBox="0 0 34 34"><path d="M17 3v28M3 17h28" stroke="#5cc85a" stroke-width="2" stroke-linecap="round"/></svg>
+<svg class="shape" style="--x:30%;--y:92%;--k:.3;--dur:19s" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#ff5c7a" stroke-width="1.5"/></svg>
+
+<div class="prism">
+<svg width="360" height="120" viewBox="0 0 360 120">
+<defs>
+<linearGradient id="ray1" x1="0" x2="1"><stop stop-color="#ff5c7a"/><stop offset="1" stop-color="#ff5c7a" stop-opacity="0"/></linearGradient>
+<linearGradient id="ray2" x1="0" x2="1"><stop stop-color="#5cc85a"/><stop offset="1" stop-color="#5cc85a" stop-opacity="0"/></linearGradient>
+<linearGradient id="ray3" x1="0" x2="1"><stop stop-color="#4d8bff"/><stop offset="1" stop-color="#4d8bff" stop-opacity="0"/></linearGradient>
+</defs>
+<path d="M40 60L360 8" stroke="url(#ray1)" stroke-width="1.5"/>
+<path d="M40 60L360 60" stroke="url(#ray2)" stroke-width="1.5"/>
+<path d="M40 60L360 112" stroke="url(#ray3)" stroke-width="1.5"/>
+<path d="M16 38L44 60 14 80z" fill="rgba(255,255,255,.06)" stroke="#fff" stroke-width="1.5"/>
+</svg>
+</div>
+<div class="baseline"></div>
+<p class="hero-label">MARKET OPENS · 09:15 IST</p>
+</div>
+
+<div class="hero-text">
+<p class="badge in" style="--i:0"><img src="assets/fec-wordmark.png" alt="Finance and Economics Club, IIT Guwahati" width="150" height="24"></p>
+<p class="tag in" style="--i:1">FEC IITG's first-ever, beginner-friendly <b>free</b> trading course</p>
+<h1 id="heroTitle">PROFIT<sup>+</sup></h1>
+<h2 class="in" style="--i:3">6 DAY COURSE <span>+ Certificate</span></h2>
+<p class="lead in" style="--i:4">
 Learn market fundamentals, technical analysis, trading psychology,
 strategy creation and risk management through a practical journey.
 </p>
-<div class="actions">
-<a class="primary js-register" href="#">Register Now</a>
-<a class="secondary" href="#curriculum">Explore Course</a>
+<div class="actions in" style="--i:5">
+<a class="primary magnetic js-register" href="#">Register Now <span aria-hidden="true">→</span></a>
+<a class="secondary magnetic" href="#curriculum">Explore Course</a>
 </div>
 </div>
 
-<div class="hero-art reveal" aria-hidden="true">
-<div class="steps">
-<i style="--w:62%;--d:0s"></i>
-<i style="--w:78%;--d:.12s"></i>
-<i style="--w:54%;--d:.24s"></i>
-<i style="--w:88%;--d:.36s"></i>
-</div>
-<img class="arrow" src="assets/profit-arrow.webp" alt="" width="443" height="396" fetchpriority="high">
+<div class="hero-art in" style="--i:2" id="heroArt">
+<div class="orb" aria-hidden="true"><div class="orb-spectrum"></div></div>
+<canvas id="hero3d" aria-hidden="true"></canvas>
+<img class="arrow" src="assets/profit-arrow.webp" alt="3D percentage arrow rising" width="443" height="396" fetchpriority="high">
 <div class="date-chip">Starting <b>28th Sept.</b></div>
 </div>
+
+</section>
+
+
+<div class="marquee" id="marquee" aria-hidden="true">
+<div class="marquee-row"><div class="track">
+<span>Market Foundation</span><i>✦</i><span>Technical Analysis</span><i>✦</i><span>Trading Strategy</span><i>✦</i><span>Risk Management</span><i>✦</i><span>Trading Psychology</span><i>✦</i><span>Final Challenge</span><i>✦</i><span>Certificate</span><i>✦</i>
+</div></div>
+<div class="marquee-row reverse outline"><div class="track">
+<span>Candlesticks</span><i>+</i><span>Support &amp; Resistance</span><i>+</i><span>Trendlines</span><i>+</i><span>Indicators</span><i>+</i><span>Stop-Loss</span><i>+</i><span>Position Sizing</span><i>+</i><span>Discipline</span><i>+</i>
+</div></div>
+</div>
+
+
+<section class="stats" aria-label="Course at a glance">
+<div class="stat-cell reveal"><b data-count="6">6</b><span>Day course</span></div>
+<div class="stat-cell reveal c-blue"><b>₹0</b><span>Completely free</span></div>
+<div class="stat-cell reveal c-green"><b data-count="1">1</b><span>Certificate on completion</span></div>
+<div class="stat-cell reveal c-coral"><b><span data-count="28">28</span><small>SEP</small></b><span>Course starts</span></div>
+<div class="stat-cell reveal open"><em>Open to</em><b>ALL</b><span>No prior experience needed</span></div>
 </section>
 
 
@@ -88,7 +139,7 @@ strategy creation and risk management through a practical journey.
 <section id="about" class="section">
 <div class="section-head reveal">
 <p class="eyebrow">01 / About</p>
-<h2>About PROFIT+</h2>
+<h2 data-split>About PROFIT+</h2>
 </div>
 
 <div class="bento">
@@ -97,31 +148,23 @@ strategy creation and risk management through a practical journey.
 <h3>From market curiosity to structured trading knowledge.</h3>
 <p>
 A beginner friendly trading bootcamp designed to transform market curiosity
-into structured trading knowledge. No prior experience needed, just show up
-and learn.
+into structured trading knowledge. Open to all, no prior experience needed,
+just show up and learn.
 </p>
-<a class="secondary small" href="#curriculum">See the 6 days</a>
+<ul class="chips">
+<li>Beginner friendly</li><li>Hands-on</li><li>Free</li><li>Certificate</li>
+</ul>
+<a class="secondary small magnetic" href="#curriculum">See the 6 days</a>
 </div>
 
-<div class="box stat reveal"><b>6</b><span>Day course</span></div>
-<div class="box stat reveal"><b>₹0</b><span>Completely free</span></div>
-<div class="box stat reveal"><b>1</b><span>Certificate on completion</span></div>
-<div class="box stat reveal"><b>28<small>SEP</small></b><span>Course starts</span></div>
-
-<div class="box full terminal reveal">
+<div class="box w2 h2 terminal reveal">
 <div class="terminal-top">
-<span class="ticker">NIFTY 50 <em>▲ +2.84%</em></span>
-<span class="dots"><i></i><i></i><i></i></span>
+<span class="ticker">PROFIT+ SIM <em id="simChange">▲ +0.00%</em></span>
+<span class="live"><i></i>LIVE SIMULATION</span>
 </div>
-<svg class="chart" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
-<defs>
-<linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4d8bff" stop-opacity=".55"/><stop offset="1" stop-color="#4d8bff" stop-opacity="0"/></linearGradient>
-</defs>
-<path d="M0 96 L50 80 L100 88 L150 62 L200 70 L250 30 L300 48 L350 22 L400 8 L400 120 L0 120Z" fill="url(#cf)"/>
-<path class="line" d="M0 96 L50 80 L100 88 L150 62 L200 70 L250 30 L300 48 L350 22 L400 8" fill="none" stroke="#9cc1ff" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
-</svg>
+<canvas id="liveChart" aria-label="Animated simulated candlestick chart" role="img"></canvas>
 <div class="numbers">
-<b>₹10,000 → ₹14,850</b>
+<b>₹10,000 → ₹<span data-count="14850" data-format="in">14,850</span></b>
 <span>Portfolio Simulation</span>
 </div>
 </div>
@@ -130,56 +173,70 @@ and learn.
 </section>
 
 
-<section id="curriculum" class="section">
+<section id="curriculum" class="hscroll">
+<div class="hscroll-sticky">
+<div class="hscroll-head">
 <div class="section-head reveal">
 <p class="eyebrow">02 / Curriculum</p>
-<h2>6 Day Learning Journey</h2>
+<h2 data-split>6 Day Learning Journey</h2>
+</div>
+<div class="hscroll-meter" aria-hidden="true">
+<span id="dayCounter">DAY 01 / 06</span>
+<div class="meter"><i id="dayMeter"></i></div>
+</div>
 </div>
 
-<div class="bento days">
+<div class="hscroll-track" id="hTrack">
 
-<div class="box day w2 reveal">
+<article class="box hcard reveal">
+<span class="hnum">01</span>
 <img src="icons/market.svg" alt="" width="48" height="48">
 <h3>Day 1</h3>
 <h4>Market Foundation</h4>
 <p>Stock markets, exchanges, orders and trading basics.</p>
-</div>
+</article>
 
-<div class="box day reveal">
+<article class="box hcard reveal">
+<span class="hnum">02</span>
 <img src="icons/chart.svg" alt="" width="48" height="48">
 <h3>Day 2</h3>
 <h4>Technical Analysis</h4>
 <p>Candlesticks, trends, indicators and chart reading.</p>
-</div>
+</article>
 
-<div class="box day reveal">
+<article class="box hcard reveal">
+<span class="hnum">03</span>
 <img src="icons/strategy.svg" alt="" width="48" height="48">
 <h3>Day 3</h3>
 <h4>Trading Strategy</h4>
 <p>Entry rules, exits and building a trading plan.</p>
-</div>
+</article>
 
-<div class="box day reveal">
+<article class="box hcard reveal">
+<span class="hnum">04</span>
 <img src="icons/risk.svg" alt="" width="48" height="48">
 <h3>Day 4</h3>
 <h4>Risk Management</h4>
 <p>Capital protection and disciplined execution.</p>
-</div>
+</article>
 
-<div class="box day reveal">
+<article class="box hcard reveal">
+<span class="hnum">05</span>
 <img src="icons/psychology.svg" alt="" width="48" height="48">
 <h3>Day 5</h3>
 <h4>Trading Psychology</h4>
 <p>Emotions, patience and professional mindset.</p>
-</div>
+</article>
 
-<div class="box day w2 reveal">
+<article class="box hcard reveal">
+<span class="hnum">06</span>
 <img src="icons/trophy.svg" alt="" width="48" height="48">
 <h3>Day 6</h3>
 <h4>Final Challenge</h4>
 <p>Create and present your own trading framework.</p>
-</div>
+</article>
 
+</div>
 </div>
 </section>
 
@@ -187,7 +244,7 @@ and learn.
 <section id="project" class="section">
 <div class="section-head reveal">
 <p class="eyebrow">03 / Outcome</p>
-<h2>Build. Present. Get Certified.</h2>
+<h2 data-split>Build. Present. Get Certified.</h2>
 </div>
 
 <div class="bento">
@@ -198,14 +255,25 @@ and learn.
 Build your own market analysis framework, define strategy rules,
 create risk management guidelines and present your approach.
 </p>
+<ol class="steps-list">
+<li><b>01</b>Market analysis framework</li>
+<li><b>02</b>Strategy rules</li>
+<li><b>03</b>Risk management guidelines</li>
+<li><b>04</b>Present your approach</li>
+</ol>
 </div>
 
 <div class="box w2 certificate reveal">
-<img src="assets/fec-mark.png" alt="" width="28" height="58">
-<div>
+<div class="holo" aria-hidden="true"></div>
+<div class="cert-top">
+<img src="assets/fec-mark.png" alt="" width="20" height="41">
+<span>CERTIFICATE OF COMPLETION</span>
+</div>
 <h3>PROFIT+ CERTIFIED</h3>
 <p>Trading Foundation Program</p>
+<div class="cert-foot">
 <span>Finance &amp; Economics Club IIT Guwahati</span>
+<span class="seal" aria-hidden="true">+</span>
 </div>
 </div>
 
@@ -214,10 +282,13 @@ create risk management guidelines and present your approach.
 
 </main>
 
-<footer>
-<div class="steps small" aria-hidden="true"><i style="--w:40%"></i><i style="--w:65%"></i><i style="--w:52%"></i></div>
+<footer id="footer">
 <h2>Master The Markets.</h2>
-<a class="primary js-register" href="#">Register Now</a>
+<a class="primary magnetic js-register" href="#">Register Now <span aria-hidden="true">→</span></a>
+<div class="giant" aria-hidden="true">
+<span class="giant-outline">PROFIT+</span>
+<span class="giant-fill">PROFIT+</span>
+</div>
 <img class="wordmark" src="assets/fec-wordmark.png" alt="Finance and Economics Club, IIT Guwahati" width="192" height="31" loading="lazy">
 <p>© PROFIT+ Trading Bootcamp</p>
 </footer>
