@@ -448,7 +448,10 @@ offX=r.left-hr.left;offY=r.top-hr.top;
 maxX=hr.right-r.left-24;
 edgeX=hr.right-r.left-110;
 };
-const idle=t=>[w*.64+Math.sin(t*.35)*w*.07,h*.8+Math.sin(t*.6)*h*.05];
+// idle path when nobody is steering: a wide left-right sweep so the candle visibly grows/shrinks
+const idle=finePointer
+?t=>[w*(.62+.14*Math.sin(t*.45)),h*(.78+.05*Math.sin(t*.8))]
+:t=>[w*(.52+.3*Math.sin(t*.55)),h*(.74+.05*Math.sin(t*.9))];
 const mix=k=>UP.map((u,i)=>Math.round(DOWN[i]+(u-DOWN[i])*k)).join(",");
 
 const render=()=>{
