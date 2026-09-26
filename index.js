@@ -51,8 +51,12 @@ const d=Math.floor(t/86400),h=Math.floor(t%86400/3600),m=Math.floor(t%3600/60),s
 return (d?`${d}d `:"")+`${pad(h)}h ${pad(m)}m ${pad(sec)}s`;
 };
 
-const cardHTML=(d,i,now)=>{
-const at=unlocks[i],locked=now<at;
+const isLocked=(i,now)=>now<unlocks[i];
+const nextLocked=now=>unlocks.findIndex(u=>now<u);
+
+// Panel for the selected day: topics once unlocked, countdown before that
+const panelHTML=(d,i,now)=>{
+const at=unlocks[i],locked=isLocked(i,now);
 const topics=d.topics||[];
 const live=topics.filter(t=>safeLink(t.link)).length;
 const isNew=!locked&&now-at<DAY_MS&&at.getTime()>0;
@@ -61,60 +65,115 @@ const status=locked
 :isNew?`<span class="status new"><i></i>New</span>`
 :live?`<span class="status on"><i></i>${live}/${topics.length} live</span>`:`<span class="status">Material soon</span>`;
 
-const head=`<span class="hnum" aria-hidden="true">${esc(pad(d.day))}</span>
-<div class="hcard-top">
-<div class="hcard-meta"><span class="day-pill">DAY ${esc(d.day)}</span>${status}</div>
-<span class="f-ico"><img src="icons/${esc(d.icon)}.svg" alt="" width="28" height="28"></span>
-</div>
-<div class="hcard-body"><h4>${esc(d.title)}</h4><p>${esc(d.summary)}</p></div>`;
-
+let content;
 if(locked){
-const next=unlocks.findIndex(u=>now<u)===i;
-return head+`<div class="locked">
+const next=nextLocked(now)===i;
+content=`<div class="locked">
 <div class="lock-bars" aria-hidden="true">${topics.map(()=>"<i></i>").join("")}</div>
 <div class="lock-info">
 <svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>
 <div>${next?`<b>Unlocks in <span data-countdown="${i}">${countdown(at-now)}</span></b><span>${esc(fmtDay(at))}, ${esc(fmtTime(at))}</span>`:`<b>Unlocks ${esc(fmtDay(at))}</b><span>${esc(fmtTime(at))}</span>`}</div>
 </div>
 </div>`;
-}
-
-const rows=topics.map((t,k)=>{
+}else{
+content=`<ul class="topics">${topics.map((t,k)=>{
 const href=safeLink(t.link);
 return href
 ?`<li style="--ti:${k}"><a class="topic" href="${esc(href)}" target="_blank" rel="noopener"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><svg class="ico t-go" aria-hidden="true"><use href="#i-drive"/></svg></a></li>`
 :`<li style="--ti:${k}"><span class="topic soon"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><span class="t-soon">Soon</span></span></li>`;
-}).join("");
-return head+`<ul class="topics">${rows}</ul>`;
+}).join("")}</ul>`;
+}
+
+return `<div class="jp-head">
+<span class="jnum" aria-hidden="true">${esc(pad(d.day))}</span>
+<div>
+<div class="jp-meta"><span class="day-pill">DAY ${esc(d.day)}</span>${status}</div>
+<h3>${esc(d.title)}</h3>
+</div>
+<span class="f-ico"><img src="icons/${esc(d.icon)}.svg" alt="" width="28" height="28"></span>
+</div>
+<div class="jp-body">${content}</div>`;
 };
 
-const trackEl=$("#hTrack");
-trackEl.innerHTML=days.map(d=>`<article class="box hcard reveal" id="day-${esc(d.day)}"></article>`).join("");
-const cardEls=[...trackEl.children];
-$("#dayPills").innerHTML=days.map((d,i)=>`<button type="button" data-i="${i}" aria-label="Day ${esc(d.day)}: ${esc(d.title)}">${esc(d.day)}</button>`).join("");
-const pillEls=[...$("#dayPills").children];
+// Day picker: one candle per day, rising like an uptrend (low/high as % of chart height)
+const LEVELS=[[8,30],[24,44],[34,48],[42,64],[58,80],[72,96]];
+const jChart=$("#jChart"),jPanel=$("#jPanel"),jTrend=$("#jTrend");
+jChart.insertAdjacentHTML("beforeend",days.map((d,i)=>{
+const [lo,hi]=LEVELS[i]||[10+i*14,30+i*14];
+return `<button type="button" class="jday" role="tab" id="jtab-${i}" aria-controls="jPanel" aria-selected="false" tabindex="-1" style="--lo:${lo}%;--hi:${hi}%;--i:${i}">
+<span class="jc" aria-hidden="true"><span class="jwick"></span><span class="jbody"><svg class="ico jlock"><use href="#i-lock"/></svg></span></span>
+<span class="jlab"><b>DAY ${esc(d.day)}</b><small>${esc(d.title)}</small></span>
+</button>`;
+}).join(""));
+const tabs=$$(".jday");
 
-let lockState=[];
-const renderDays=()=>{
+// trend line through the tops of the candles
+jTrend.querySelector("polyline").setAttribute("points",tabs.map((_,i)=>{
+const [,hi]=LEVELS[i]||[0,30+i*14];
+return `${(i+.5)/tabs.length*600},${100-hi}`;
+}).join(" "));
+
+let selected=-1,panelKey="";
+const renderPanel=(animate)=>{
 const now=new Date();
-days.forEach((d,i)=>{
-const locked=now<unlocks[i];
-const isNew=!locked&&now-unlocks[i]<DAY_MS;
-const key=`${locked}|${isNew}|${unlocks.findIndex(u=>now<u)}`;
-if(lockState[i]===key)return;
-lockState[i]=key;
-cardEls[i].innerHTML=cardHTML(d,i,now);
-cardEls[i].classList.toggle("is-locked",locked);
-pillEls[i].classList.toggle("is-locked",locked);
-});
+const key=`${selected}|${isLocked(selected,now)}|${now-unlocks[selected]<DAY_MS}|${nextLocked(now)}`;
+if(key===panelKey)return;
+panelKey=key;
+jPanel.innerHTML=panelHTML(days[selected],selected,now);
+jPanel.setAttribute("aria-labelledby",tabs[selected].id);
+jPanel.classList.toggle("is-locked",isLocked(selected,now));
+if(animate&&!reduceMotion)jPanel.animate([{opacity:0,translate:"0 12px"},{opacity:1,translate:"0 0"}],{duration:420,easing:"cubic-bezier(.2,.8,.2,1)"});
 };
-renderDays();
+
+const select=(i,focus)=>{
+if(i===selected)return;
+selected=i;
+tabs.forEach((t,k)=>{
+const on=k===i;
+t.classList.toggle("active",on);
+t.setAttribute("aria-selected",on);
+t.tabIndex=on?0:-1;
+});
+if(focus)tabs[i].focus();
+panelKey="";
+renderPanel(true);
+};
+
+const renderStates=()=>{
+const now=new Date();
+tabs.forEach((t,i)=>t.classList.toggle("is-locked",isLocked(i,now)));
+renderPanel(false);
+};
+
+jChart.addEventListener("click",e=>{
+const t=e.target.closest(".jday");
+if(t)select(tabs.indexOf(t),false);
+});
+jChart.addEventListener("keydown",e=>{
+const moves={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1};
+let i=selected;
+if(e.key in moves)i=(selected+moves[e.key]+tabs.length)%tabs.length;
+else if(e.key==="Home")i=0;
+else if(e.key==="End")i=tabs.length-1;
+else return;
+e.preventDefault();
+select(i,true);
+});
+
+// open on the most recently unlocked day (Day 1 before the course starts)
+if(days.length){
+const now=new Date();
+let open=0;
+unlocks.forEach((u,i)=>{if(now>=u)open=i});
+tabs.forEach((t,i)=>t.classList.toggle("is-locked",isLocked(i,now)));
+select(open,false);
+}
 
 // tick the countdown every second while any day is still locked
 if(unlocks.some(u=>new Date()<u)){
 const clock=setInterval(()=>{
 const now=new Date();
-renderDays();
+renderStates();
 $$("[data-countdown]").forEach(el=>{el.textContent=countdown(unlocks[+el.dataset.countdown]-now)});
 if(!unlocks.some(u=>now<u))clearInterval(clock);
 },1000);
@@ -207,38 +266,22 @@ navLinks.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.t
 const bar=$("#progressBar");
 const heroFx=$(".hero-fx");
 const marquee=$("#marquee");
-const hSection=$("#curriculum");
-const hTrack=$("#hTrack");
-const hCards=$$(".hcard");
-const pillBtns=$$("#dayPills button");
-const dayMeter=$("#dayMeter");
 const footer=$("#footer");
 const giantFill=$(".giant-fill");
 
 let hero3d=null;
-let vh=0,docH=0,heroH=0,trackMax=0,cardCenters=[],hMode=false;
-let lastY=scrollY,skew=0,ticking=false,lastDay=0;
+let vh=0,docH=0,heroH=0;
+let lastY=scrollY,skew=0,ticking=false;
 
 const measure=()=>{
 vh=innerHeight;
 heroH=hero.offsetHeight;
-hMode=wideQuery.matches&&!reduceMotion;
-if(hMode){
-trackMax=Math.max(0,hTrack.scrollWidth-innerWidth);
-hSection.style.height=trackMax+vh+"px";
-cardCenters=hCards.map(c=>c.offsetLeft+c.offsetWidth/2);
-}else{
-hSection.style.height="";
-hTrack.style.transform="";
-hCards.forEach(c=>{c.style.removeProperty("--cry");c.style.removeProperty("--ctz")});
-}
 docH=document.documentElement.scrollHeight;
 };
 
 const frame=()=>{
 // reads
 const y=scrollY;
-const hTop=hMode?hSection.getBoundingClientRect().top:0;
 const fTop=footer.getBoundingClientRect().top;
 
 // writes
@@ -257,21 +300,6 @@ skew+=(clamp(vel*.2,-8,8)-skew)*.12;
 marquee.style.setProperty("--skew",skew.toFixed(2)+"deg");
 }
 
-if(hMode){
-const p=clamp(-hTop/(hSection.offsetHeight-vh));
-const x=p*trackMax;
-hTrack.style.transform=`translate3d(${-x}px,0,0)`;
-let day=1,best=Infinity;
-hCards.forEach((c,i)=>{
-const d=(cardCenters[i]-x-innerWidth/2)/innerWidth;
-if(Math.abs(d)<best){best=Math.abs(d);day=i+1}
-c.style.setProperty("--cry",(d*-28).toFixed(2)+"deg");
-c.style.setProperty("--ctz",(-Math.abs(d)*160).toFixed(1)+"px");
-});
-if(day!==lastDay){pillBtns.forEach((b,i)=>b.classList.toggle("active",i===day-1));lastDay=day}
-dayMeter.style.transform=`scaleX(${p.toFixed(3)})`;
-}
-
 if(fTop<vh){
 giantFill.style.setProperty("--fp",clamp((vh-fTop)/footer.offsetHeight*1.3).toFixed(3));
 }
@@ -283,29 +311,6 @@ else ticking=false;
 const kick=()=>{if(!ticking){ticking=true;requestAnimationFrame(frame)}};
 addEventListener("scroll",kick,{passive:true});
 
-// on the stacked (mobile) layout, highlight the pill of the card in view
-const pillSpy=new IntersectionObserver(entries=>{
-if(hMode)return;
-entries.forEach(e=>{
-if(e.isIntersecting)pillBtns.forEach((b,i)=>b.classList.toggle("active",hCards[i]===e.target));
-});
-},{rootMargin:"-45% 0px -50% 0px"});
-hCards.forEach(c=>pillSpy.observe(c));
-
-// day pills jump to a card (in the horizontal track or the stacked mobile list)
-$("#dayPills").addEventListener("click",e=>{
-const b=e.target.closest("button");
-if(!b)return;
-const i=+b.dataset.i;
-const behavior=reduceMotion?"auto":"smooth";
-if(hMode&&trackMax>0){
-const top=hSection.getBoundingClientRect().top+scrollY;
-const p=clamp((cardCenters[i]-innerWidth/2)/trackMax);
-scrollTo({top:top+p*(hSection.offsetHeight-vh),behavior});
-}else{
-hCards[i].scrollIntoView({behavior,block:"center"});
-}
-});
 addEventListener("resize",()=>{measure();kick()});
 wideQuery.addEventListener("change",()=>{measure();kick()});
 document.fonts.ready.then(()=>{measure();kick()});
@@ -423,8 +428,8 @@ else addEventListener("load",()=>setTimeout(load,50),{once:true});
 }
 
 // ---------- Live candle: follows the cursor, beam in from the left, rays fan out ----------
-// Moving up paints a green (bull) candle, moving down a red (bear) one; speed stretches the body.
-// The price tag reads higher on screen as a gain, lower as a loss.
+// The candle grows as the cursor moves right and shrinks toward the left; it is green while
+// moving right and red while moving left. The price tag reads further right as a bigger gain.
 // Everything fades toward the left edge so the hero text stays readable.
 // Rays and candle are moved with transforms only, so nothing large is repainted per frame.
 (()=>{
@@ -432,14 +437,15 @@ const raysEl=$("#rays"),top=$("#candleTop");
 const body=$("#pBody"),wick=$("#pWick"),tagBg=$("#pTagBg"),tagText=$("#pTagText");
 const glowStop=$("#pGlowStop"),glowEnd=glowStop.nextElementSibling;
 const UP=[62,224,143],DOWN=[255,92,122];
-let w=0,h=0,left=0,docTop=0,offX=0,offY=0,x=0,y=0,tx=null,ty=null,frame=0,inView=true;
-let trend=1,speed=0,lastY=0,lastPct="",lastOp="",lastLook="";
+let w=0,h=0,left=0,docTop=0,offX=0,offY=0,maxX=0,x=0,y=0,tx=null,ty=null,frame=0,inView=true;
+let trend=1,lastX=0,lastPct="",lastOp="",lastLook="";
 const t0=performance.now();
 
 const measureFx=()=>{
 const r=heroFx.getBoundingClientRect(),hr=hero.getBoundingClientRect();
 w=r.width;h=r.height;left=r.left;docTop=r.top+scrollY;
 offX=r.left-hr.left;offY=r.top-hr.top;
+maxX=hr.right-r.left-110;
 };
 const idle=t=>[w*.64+Math.sin(t*.35)*w*.07,h*.8+Math.sin(t*.6)*h*.05];
 const mix=k=>UP.map((u,i)=>Math.round(DOWN[i]+(u-DOWN[i])*k)).join(",");
@@ -453,7 +459,7 @@ if(op!==lastOp){raysEl.style.opacity=top.style.opacity=lastOp=op}
 
 // candle colour + body height (only touched when they visibly change)
 const rgb=`rgb(${mix((trend+1)/2)})`;
-const bh=(36+speed*30).toFixed(0);
+const bh=(14+clamp(x/w)*84).toFixed(0);
 const look=rgb+bh;
 if(look!==lastLook){
 lastLook=look;
@@ -467,7 +473,7 @@ glowStop.setAttribute("stop-color",rgb);
 glowEnd.setAttribute("stop-color",rgb);
 }
 
-const pct=((.5-y/h)*10).toFixed(2);
+const pct=((x/w-.5)*10).toFixed(2);
 if(pct!==lastPct){
 lastPct=pct;
 tagText.textContent=(pct>=0?"+":"")+pct+"%";
@@ -480,10 +486,9 @@ frame=0;
 const [ix,iy]=idle((now-t0)/1000);
 x+=((tx??ix)-x)*.3;
 y+=((ty??iy)-y)*.3;
-const dy=y-lastY;
-lastY=y;
-if(Math.abs(dy)>.3)trend+=(clamp(-dy/3,-1,1)-trend)*.15;
-speed+=(clamp(Math.abs(dy)/14)-speed)*.12;
+const dx=x-lastX;
+lastX=x;
+if(Math.abs(dx)>.3)trend+=(clamp(dx/3,-1,1)-trend)*.15;
 render();
 run();
 };
@@ -491,14 +496,14 @@ const run=()=>{if(!frame&&inView&&!document.hidden&&!reduceMotion)frame=requestA
 
 measureFx();
 [x,y]=idle(0);
-lastY=y;
+lastX=x;
 render();
 addEventListener("resize",measureFx);
 document.addEventListener("visibilitychange",run);
 new IntersectionObserver(([e])=>{inView=e.isIntersecting;if(inView){measureFx();run()}}).observe(hero);
 
 if(finePointer&&!reduceMotion){
-hero.addEventListener("pointermove",e=>{tx=e.clientX-left;ty=e.clientY+scrollY-docTop});
+hero.addEventListener("pointermove",e=>{tx=Math.min(e.clientX-left,maxX);ty=e.clientY+scrollY-docTop});
 hero.addEventListener("pointerleave",()=>{tx=ty=null});
 }
 run();
@@ -522,7 +527,7 @@ else{arrow.style.setProperty("--px",hx*-12+"px");arrow.style.setProperty("--py",
 // ---------- 3D tilt + specular light on glass boxes ----------
 const MAX_TILT=6;
 
-$$(".box").forEach(box=>{
+$$(".box:not(.jpanel)").forEach(box=>{
 let rect=null,frame=0,x=0,y=0;
 
 const paint=()=>{
@@ -531,7 +536,6 @@ const px=(x-rect.left)/rect.width;
 const py=(y-rect.top)/rect.height;
 box.style.setProperty("--mx",px*100+"%");
 box.style.setProperty("--my",py*100+"%");
-if(box.classList.contains("hcard")&&hMode)return;
 box.style.setProperty("--ry",(px-.5)*MAX_TILT*2+"deg");
 box.style.setProperty("--rx",(.5-py)*MAX_TILT*2+"deg");
 };

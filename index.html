@@ -95,10 +95,6 @@
 <p class="kicker in" style="--i:1"><span class="dot"></span>FEC IITG's first-ever trading course</p>
 <h1 id="heroTitle">PROFIT<sup>+</sup></h1>
 <p class="subhead in" style="--i:3">A free, beginner-friendly <span class="nowrap">6&#8209;day course</span> <span>+ certificate.</span></p>
-<p class="lead in" style="--i:4">
-Learn market fundamentals, technical analysis, trading psychology,
-strategy creation and risk management through a practical journey.
-</p>
 <div class="actions in" style="--i:5">
 <a class="primary magnetic" href="https://forms.gle/hKm82QtX2X56m4GZ6" target="_blank" rel="noopener">Register Now <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 <a class="secondary wa magnetic" href="https://chat.whatsapp.com/L7EFx173FkP0SSHtQUEY1v" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg>Join WhatsApp</a>
@@ -159,15 +155,8 @@ strategy creation and risk management through a practical journey.
 -->
 
 <section id="about" class="section container">
-<div class="section-head split reveal">
-<div>
+<div class="section-head reveal">
 <p class="eyebrow">01 / About</p>
-<h2 data-split>From market curiosity to real trading skill.</h2>
-</div>
-<p class="intro">
-PROFIT+ is a beginner friendly trading bootcamp designed to transform market
-curiosity into structured trading knowledge, in six practical days.
-</p>
 </div>
 
 <div class="bento three">
@@ -175,19 +164,16 @@ curiosity into structured trading knowledge, in six practical days.
 <div class="box feature reveal">
 <span class="f-ico"><img src="icons/market.svg" alt="" width="28" height="28"></span>
 <h3>Zero experience needed</h3>
-<p>Open to all. We start from how markets, exchanges and orders actually work.</p>
 </div>
 
 <div class="box feature reveal">
 <span class="f-ico"><img src="icons/strategy.svg" alt="" width="28" height="28"></span>
 <h3>Learn by doing</h3>
-<p>Six practical sessions that end with you building and presenting your own trading framework.</p>
 </div>
 
 <div class="box feature reveal">
 <span class="f-ico"><img src="icons/trophy.svg" alt="" width="28" height="28"></span>
 <h3>Get certified</h3>
-<p>Complete the course to earn the PROFIT+ Trading Foundation certificate from FEC IIT Guwahati.</p>
 </div>
 
 <div class="box full terminal reveal">
@@ -198,7 +184,7 @@ curiosity into structured trading knowledge, in six practical days.
 <canvas id="liveChart" aria-label="Animated simulated candlestick chart" role="img"></canvas>
 <div class="numbers">
 <b>₹10,000 → ₹<span data-count="14850" data-format="in">14,850</span></b>
-<span>Portfolio Simulation · learn to read charts like this by Day 2</span>
+<span>Portfolio Simulation</span>
 </div>
 </div>
 
@@ -206,24 +192,19 @@ curiosity into structured trading knowledge, in six practical days.
 </section>
 
 
-<section id="curriculum" class="hscroll">
-<div class="hscroll-sticky">
-<div class="hscroll-head container">
+<section id="curriculum" class="section container">
 <div class="section-head reveal">
 <p class="eyebrow">02 / Curriculum</p>
 <h2 data-split>6-Day Learning Journey</h2>
-<p class="intro">A new day unlocks each day of the course. Tap any topic to open its study material.</p>
-</div>
-<div class="hscroll-meter">
-<div class="day-pills" id="dayPills" role="group" aria-label="Jump to day"></div>
-<div class="meter" aria-hidden="true"><i id="dayMeter"></i></div>
-</div>
 </div>
 
-<div class="hscroll-track" id="hTrack">
-<noscript><p class="container">Enable JavaScript to see the day-wise topics and study material.</p></noscript>
+<div class="journey reveal">
+<div class="jchart" id="jChart" role="tablist" aria-label="Course days">
+<svg class="jtrend" id="jTrend" viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="1"/></svg>
 </div>
+<div class="box jpanel" id="jPanel" role="tabpanel"></div>
 </div>
+<noscript><p>Enable JavaScript to see the day-wise topics and study material.</p></noscript>
 </section>
 
 
