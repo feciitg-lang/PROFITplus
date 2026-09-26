@@ -4,109 +4,173 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PROFIT+ | Trading Bootcamp</title>
-<meta name="description" content="PROFIT+ Trading Bootcamp - Master markets, strategy and risk management.">
+<meta name="description" content="PROFIT+ by FEC IIT Guwahati: a free, beginner-friendly 6 day trading course with certificate. Starting 28th Sept.">
+<meta name="theme-color" content="#03060f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PROFIT+ | Free 6 Day Trading Course">
+<meta property="og:description" content="FEC IITG's first-ever, beginner-friendly free trading course. 6 days + certificate. Starting 28th Sept.">
+<meta property="og:image" content="/assets/og-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="index.css">
+<script>document.documentElement.classList.add("js")</script>
 <script defer src="index.js"></script>
 </head>
 <body>
 
-<div class="noise"></div>
+<div class="bg" aria-hidden="true">
+<span class="blob b1"></span>
+<span class="blob b2"></span>
+<span class="blob b3"></span>
+<div class="grid"></div>
+</div>
 
 <header>
 <nav>
-<div class="logo">PROFIT<span>+</span></div>
+<a class="logo" href="#top" aria-label="PROFIT+ home">
+<img src="assets/fec-mark.png" alt="" width="14" height="29">
+<span>PROFIT<sup>+</sup></span>
+</a>
 <div class="links" id="navLinks">
 <a href="#about">About</a>
 <a href="#curriculum">Curriculum</a>
 <a href="#project">Project</a>
+<a class="nav-cta js-register" href="#">Register</a>
 </div>
-<button id="menuBtn">☰</button>
+<button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button>
 </nav>
 </header>
 
-<main>
+<main id="top">
 
 <section class="hero">
 <div class="hero-text reveal">
-<p class="tag">FINANCE & ECONOMICS CLUB PRESENTS</p>
-<h1>PROFIT<em>+</em></h1>
-<h2>6 DAY TRADING BOOTCAMP</h2>
-<p>
+<p class="badge"><img src="assets/fec-wordmark.png" alt="Finance and Economics Club, IIT Guwahati" width="150" height="24"></p>
+<p class="tag">FEC IITG's first-ever, beginner-friendly <b>free</b> trading course</p>
+<h1>PROFIT<sup>+</sup></h1>
+<h2>6 DAY COURSE <span>+ Certificate</span></h2>
+<p class="lead">
 Learn market fundamentals, technical analysis, trading psychology,
 strategy creation and risk management through a practical journey.
 </p>
-<div>
-<a class="primary">Register Now</a>
+<div class="actions">
+<a class="primary js-register" href="#">Register Now</a>
 <a class="secondary" href="#curriculum">Explore Course</a>
 </div>
 </div>
 
-<div class="terminal reveal">
-<div class="ticker">NIFTY 50 ▲ +2.84%</div>
-<div class="chart">
-<div></div>
+<div class="hero-art reveal" aria-hidden="true">
+<div class="steps">
+<i style="--w:62%;--d:0s"></i>
+<i style="--w:78%;--d:.12s"></i>
+<i style="--w:54%;--d:.24s"></i>
+<i style="--w:88%;--d:.36s"></i>
 </div>
+<img class="arrow" src="assets/profit-arrow.webp" alt="" width="443" height="396" fetchpriority="high">
+<div class="date-chip">Starting <b>28th Sept.</b></div>
+</div>
+</section>
+
+
+<!--
+  BENTO GRID: every piece of content lives in a .box inside a .bento grid.
+  To add content, add another <div class="box reveal">…</div>.
+  Size modifiers: .w2 (2 columns wide), .h2 (2 rows tall), .full (whole row).
+-->
+
+<section id="about" class="section">
+<div class="section-head reveal">
+<p class="eyebrow">01 / About</p>
+<h2>About PROFIT+</h2>
+</div>
+
+<div class="bento">
+
+<div class="box w2 h2 reveal about-box">
+<h3>From market curiosity to structured trading knowledge.</h3>
+<p>
+A beginner friendly trading bootcamp designed to transform market curiosity
+into structured trading knowledge. No prior experience needed, just show up
+and learn.
+</p>
+<a class="secondary small" href="#curriculum">See the 6 days</a>
+</div>
+
+<div class="box stat reveal"><b>6</b><span>Day course</span></div>
+<div class="box stat reveal"><b>₹0</b><span>Completely free</span></div>
+<div class="box stat reveal"><b>1</b><span>Certificate on completion</span></div>
+<div class="box stat reveal"><b>28<small>SEP</small></b><span>Course starts</span></div>
+
+<div class="box full terminal reveal">
+<div class="terminal-top">
+<span class="ticker">NIFTY 50 <em>▲ +2.84%</em></span>
+<span class="dots"><i></i><i></i><i></i></span>
+</div>
+<svg class="chart" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+<defs>
+<linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4d8bff" stop-opacity=".55"/><stop offset="1" stop-color="#4d8bff" stop-opacity="0"/></linearGradient>
+</defs>
+<path d="M0 96 L50 80 L100 88 L150 62 L200 70 L250 30 L300 48 L350 22 L400 8 L400 120 L0 120Z" fill="url(#cf)"/>
+<path class="line" d="M0 96 L50 80 L100 88 L150 62 L200 70 L250 30 L300 48 L350 22 L400 8" fill="none" stroke="#9cc1ff" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+</svg>
 <div class="numbers">
 <b>₹10,000 → ₹14,850</b>
 <span>Portfolio Simulation</span>
 </div>
 </div>
-</section>
 
-
-<section id="about" class="section reveal">
-<h2>About PROFIT+</h2>
-<p>
-A beginner friendly trading bootcamp designed to transform market curiosity
-into structured trading knowledge.
-</p>
+</div>
 </section>
 
 
 <section id="curriculum" class="section">
-<h2 class="reveal">6 Day Learning Journey</h2>
+<div class="section-head reveal">
+<p class="eyebrow">02 / Curriculum</p>
+<h2>6 Day Learning Journey</h2>
+</div>
 
-<div class="cards">
+<div class="bento days">
 
-<div class="card reveal">
-<img src="icons/market.svg">
+<div class="box day w2 reveal">
+<img src="icons/market.svg" alt="" width="48" height="48">
 <h3>Day 1</h3>
 <h4>Market Foundation</h4>
 <p>Stock markets, exchanges, orders and trading basics.</p>
 </div>
 
-<div class="card reveal">
-<img src="icons/chart.svg">
+<div class="box day reveal">
+<img src="icons/chart.svg" alt="" width="48" height="48">
 <h3>Day 2</h3>
 <h4>Technical Analysis</h4>
 <p>Candlesticks, trends, indicators and chart reading.</p>
 </div>
 
-<div class="card reveal">
-<img src="icons/strategy.svg">
+<div class="box day reveal">
+<img src="icons/strategy.svg" alt="" width="48" height="48">
 <h3>Day 3</h3>
 <h4>Trading Strategy</h4>
 <p>Entry rules, exits and building a trading plan.</p>
 </div>
 
-<div class="card reveal">
-<img src="icons/risk.svg">
+<div class="box day reveal">
+<img src="icons/risk.svg" alt="" width="48" height="48">
 <h3>Day 4</h3>
 <h4>Risk Management</h4>
 <p>Capital protection and disciplined execution.</p>
 </div>
 
-<div class="card reveal">
-<img src="icons/psychology.svg">
+<div class="box day reveal">
+<img src="icons/psychology.svg" alt="" width="48" height="48">
 <h3>Day 5</h3>
 <h4>Trading Psychology</h4>
 <p>Emotions, patience and professional mindset.</p>
 </div>
 
-<div class="card reveal">
-<img src="icons/trophy.svg">
+<div class="box day w2 reveal">
+<img src="icons/trophy.svg" alt="" width="48" height="48">
 <h3>Day 6</h3>
 <h4>Final Challenge</h4>
 <p>Create and present your own trading framework.</p>
@@ -116,28 +180,45 @@ into structured trading knowledge.
 </section>
 
 
-<section id="project" class="project reveal">
-<h2>Final Trading Challenge</h2>
+<section id="project" class="section">
+<div class="section-head reveal">
+<p class="eyebrow">03 / Outcome</p>
+<h2>Build. Present. Get Certified.</h2>
+</div>
+
+<div class="bento">
+
+<div class="box w2 project reveal">
+<h3>Final Trading Challenge</h3>
 <p>
 Build your own market analysis framework, define strategy rules,
 create risk management guidelines and present your approach.
 </p>
-</section>
+</div>
 
-
-<section class="certificate reveal">
-<h2>PROFIT+ CERTIFIED</h2>
+<div class="box w2 certificate reveal">
+<img src="assets/fec-mark.png" alt="" width="28" height="58">
+<div>
+<h3>PROFIT+ CERTIFIED</h3>
 <p>Trading Foundation Program</p>
-<span>Finance & Economics Club IIT Guwahati</span>
-</section>
+<span>Finance &amp; Economics Club IIT Guwahati</span>
+</div>
+</div>
 
+</div>
+</section>
 
 </main>
 
 <footer>
+<div class="steps small" aria-hidden="true"><i style="--w:40%"></i><i style="--w:65%"></i><i style="--w:52%"></i></div>
 <h2>Master The Markets.</h2>
+<a class="primary js-register" href="#">Register Now</a>
+<img class="wordmark" src="assets/fec-wordmark.png" alt="Finance and Economics Club, IIT Guwahati" width="192" height="31" loading="lazy">
 <p>© PROFIT+ Trading Bootcamp</p>
 </footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 </body>
 </html>
