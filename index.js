@@ -1,6 +1,3 @@
-// Paste the registration form link here. Until then, Register buttons show a "coming soon" message.
-const REGISTER_URL="";
-
 document.addEventListener("DOMContentLoaded",()=>{
 
 const reduceMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -25,28 +22,8 @@ e.stopPropagation();
 setMenu(!nav.classList.contains("open"));
 });
 nav.addEventListener("click",e=>{if(e.target.closest("a"))setMenu(false)});
-document.addEventListener("click",e=>{if(!e.target.closest("nav"))setMenu(false)});
+document.addEventListener("click",e=>{if(!e.target.closest("header"))setMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
-
-// ---------- Register buttons ----------
-const toast=$("#toast");
-let toastTimer;
-
-$$(".js-register").forEach(a=>{
-if(REGISTER_URL){
-a.href=REGISTER_URL;
-a.target="_blank";
-a.rel="noopener";
-}else{
-a.addEventListener("click",e=>{
-e.preventDefault();
-toast.textContent="Registration link opens soon. Stay tuned!";
-toast.classList.add("show");
-clearTimeout(toastTimer);
-toastTimer=setTimeout(()=>toast.classList.remove("show"),2600);
-});
-}
-});
 
 // ---------- Text splitting ----------
 const title=$("#heroTitle");
@@ -129,7 +106,7 @@ if(!e.isIntersecting)return;
 navLinks.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));
 });
 },{rootMargin:"-45% 0px -50% 0px"});
-["about","curriculum","project"].forEach(id=>spy.observe(document.getElementById(id)));
+["hero","about","curriculum","join","faq"].forEach(id=>spy.observe(document.getElementById(id)));
 
 // ---------- Scroll engine: one rAF loop drives every scroll-linked effect ----------
 const bar=$("#progressBar");
@@ -227,7 +204,7 @@ let W=0,H=0,candles=[],price=100,ticks=0,timer=0,visible=false;
 
 const newCandle=()=>({o:price,h:price,l:price,c:price});
 const tick=()=>{
-price=Math.max(20,price+(Math.random()-.46)*.9);
+price=Math.max(20,price+(Math.random()-.47)*.9+(104-price)*.012);
 const c=candles[candles.length-1];
 c.c=price;c.h=Math.max(c.h,price);c.l=Math.min(c.l,price);
 if(++ticks%7===0){
