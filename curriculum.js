@@ -12,9 +12,21 @@
                 link - Google Drive folder/file URL (https://drive.google.com/...)
                        Leave it as "" and the topic shows as "Coming soon".
 
+  ROLLOUT: days unlock one at a time (India time, IST).
+    PROFIT_ROLLOUT.start - date Day 1 unlocks (YYYY-MM-DD)
+    PROFIT_ROLLOUT.time  - time of day each day unlocks (24h, HH:MM)
+    Day N unlocks N-1 days after the start. To give a day its own date/time,
+    add  unlock: "2026-10-01 18:00"  to that day.
+    Until a day unlocks, its topics are hidden behind a countdown.
+
   NOTE: the topics below are placeholders taken from the course outline.
   Replace them with the real topics and Drive links.
 */
+
+window.PROFIT_ROLLOUT = {
+start: "2026-09-28",
+time: "00:00"
+};
 
 window.PROFIT_CURRICULUM = [
 {

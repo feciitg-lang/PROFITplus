@@ -520,21 +520,8 @@ animation:bob var(--dur) ease-in-out infinite alternate;
 100%{transform:translate(18px,-26px) rotate(120deg)}
 }
 
-.baseline{
-position:absolute;
-left:0;right:0;
-bottom:70px;
-height:1px;
-background:linear-gradient(90deg,transparent,rgba(255,255,255,.2) 20%,rgba(255,255,255,.2) 80%,transparent);
-}
-
-.prism{
-position:absolute;
-bottom:10px;
-left:62%;
-translate:calc(var(--hp,0) * -38vw) 0;
-opacity:.8;
-}
+.prism-fx{position:absolute;inset:0;overflow:visible}
+.prism-fx .ray,#pBeam{opacity:.85}
 
 /* ---------- Marquee ---------- */
 
@@ -885,6 +872,51 @@ a.topic:hover .t-go{opacity:1;transform:translate(2px,-2px)}
 .topic.soon .t-bullet{background:rgba(255,255,255,.25);box-shadow:none}
 .t-soon{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);border:1px dashed rgba(255,255,255,.2);padding:3px 8px;border-radius:999px}
 
+.status.lock{color:rgba(255,255,255,.45)}
+.status.new{color:#ffd166}
+.status.new i{background:#ffd166;animation:none;box-shadow:0 0 10px #ffd166}
+
+.day-pills button.is-locked{color:rgba(255,255,255,.35);border-style:dashed}
+.day-pills button.is-locked.active{color:#fff;border-style:solid}
+
+/* locked day: topics hidden behind a shimmering placeholder + countdown */
+.hcard.is-locked .f-ico{opacity:.45;filter:grayscale(1)}
+.hcard.is-locked .hcard-body{opacity:.75}
+
+.locked{
+position:relative;
+margin-top:auto;
+padding:16px;
+border-radius:16px;
+background:rgba(255,255,255,.025);
+border:1px dashed rgba(255,255,255,.14);
+overflow:hidden;
+}
+
+.locked::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(100deg,transparent 30%,rgba(156,193,255,.12) 50%,transparent 70%);
+transform:translateX(-100%);
+animation:shimmer 2.6s ease-in-out infinite;
+}
+
+@keyframes shimmer{to{transform:translateX(100%)}}
+
+.lock-bars{display:grid;gap:10px;margin-bottom:16px}
+.lock-bars i{display:block;height:9px;border-radius:6px;background:rgba(255,255,255,.08)}
+.lock-bars i:nth-child(1){width:78%}
+.lock-bars i:nth-child(2){width:56%}
+.lock-bars i:nth-child(3){width:68%}
+.lock-bars i:nth-child(4){width:48%}
+.lock-bars i:nth-child(n+5){width:60%}
+
+.lock-info{display:flex;align-items:center;gap:12px}
+.lock-info .ico{width:34px;height:34px;padding:8px;border-radius:10px;color:var(--ice);background:rgba(47,107,255,.15);border:1px solid rgba(156,193,255,.2)}
+.lock-info b{display:block;font-family:var(--head);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums}
+.lock-info span{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:2px}
+
 /* topics slide in after their card */
 .js .hcard .topics li{opacity:0;translate:-12px 0;transition:opacity .6s var(--ease),translate .6s var(--ease);transition-delay:calc(var(--ti) * 80ms + 350ms)}
 .js .hcard.show .topics li{opacity:1;translate:none}
@@ -1133,7 +1165,6 @@ backdrop-filter:blur(12px) saturate(140%);
 @media (max-width:900px){
 .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding-top:20px;padding-bottom:90px;gap:0}
 .hero-art{max-width:440px;justify-self:center;margin-top:10px}
-.prism{left:55%}
 .hero-fx .shape:nth-of-type(1),.hero-fx .shape:nth-of-type(3),.hero-fx .shape:nth-of-type(5){display:none}
 .scroll-cue{display:none}
 .section-head.split{grid-template-columns:minmax(0,1fr)}

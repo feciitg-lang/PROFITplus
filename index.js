@@ -25,35 +25,100 @@ nav.addEventListener("click",e=>{if(e.target.closest("a"))setMenu(false)});
 document.addEventListener("click",e=>{if(!e.target.closest("header"))setMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
 
-// ---------- Curriculum: rendered from curriculum.js ----------
+// ---------- Curriculum: rendered from curriculum.js, unlocked day by day ----------
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeLink=u=>/^https:\/\//i.test(u||"")?u:"";
 const days=Array.isArray(window.PROFIT_CURRICULUM)?window.PROFIT_CURRICULUM:[];
+const rollout=window.PROFIT_ROLLOUT||{};
+const DAY_MS=864e5;
 
-$("#hTrack").innerHTML=days.map(d=>{
+const parseIST=(date,time="00:00")=>new Date(`${date}T${time.length===5?time:"00:00"}:00+05:30`);
+const startAt=rollout.start?parseIST(rollout.start,rollout.time):null;
+const unlockAt=d=>{
+let at;
+if(d.unlock){const [dd,tt]=String(d.unlock).trim().split(/[ T]/);at=parseIST(dd,tt)}
+else if(startAt)at=new Date(startAt.getTime()+(d.day-1)*DAY_MS);
+return at&&!isNaN(at)?at:new Date(0);
+};
+const unlocks=days.map(unlockAt);
+
+const fmtDay=at=>at.toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short",timeZone:"Asia/Kolkata"});
+const fmtTime=at=>at.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit",timeZone:"Asia/Kolkata"})+" IST";
+const pad=n=>String(n).padStart(2,"0");
+const countdown=ms=>{
+const t=Math.max(0,Math.floor(ms/1000));
+const d=Math.floor(t/86400),h=Math.floor(t%86400/3600),m=Math.floor(t%3600/60),sec=t%60;
+return (d?`${d}d `:"")+`${pad(h)}h ${pad(m)}m ${pad(sec)}s`;
+};
+
+const cardHTML=(d,i,now)=>{
+const at=unlocks[i],locked=now<at;
 const topics=d.topics||[];
 const live=topics.filter(t=>safeLink(t.link)).length;
-const rows=topics.map((t,i)=>{
-const href=safeLink(t.link);
-return href
-?`<li style="--ti:${i}"><a class="topic" href="${esc(href)}" target="_blank" rel="noopener"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><svg class="ico t-go" aria-hidden="true"><use href="#i-drive"/></svg></a></li>`
-:`<li style="--ti:${i}"><span class="topic soon"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><span class="t-soon">Soon</span></span></li>`;
-}).join("");
-return `<article class="box hcard reveal" id="day-${esc(d.day)}">
-<span class="hnum" aria-hidden="true">${esc(String(d.day).padStart(2,"0"))}</span>
+const isNew=!locked&&now-at<DAY_MS&&at.getTime()>0;
+const status=locked
+?`<span class="status lock">Locked</span>`
+:isNew?`<span class="status new"><i></i>New</span>`
+:live?`<span class="status on"><i></i>${live}/${topics.length} live</span>`:`<span class="status">Material soon</span>`;
+
+const head=`<span class="hnum" aria-hidden="true">${esc(pad(d.day))}</span>
 <div class="hcard-top">
-<div class="hcard-meta"><span class="day-pill">DAY ${esc(d.day)}</span><span class="status${live?" on":""}">${live?`<i></i>${live}/${topics.length} live`:"Opens soon"}</span></div>
+<div class="hcard-meta"><span class="day-pill">DAY ${esc(d.day)}</span>${status}</div>
 <span class="f-ico"><img src="icons/${esc(d.icon)}.svg" alt="" width="28" height="28"></span>
 </div>
-<div class="hcard-body">
-<h4>${esc(d.title)}</h4>
-<p>${esc(d.summary)}</p>
-</div>
-<ul class="topics">${rows}</ul>
-</article>`;
-}).join("");
+<div class="hcard-body"><h4>${esc(d.title)}</h4><p>${esc(d.summary)}</p></div>`;
 
+if(locked){
+const next=unlocks.findIndex(u=>now<u)===i;
+return head+`<div class="locked">
+<div class="lock-bars" aria-hidden="true">${topics.map(()=>"<i></i>").join("")}</div>
+<div class="lock-info">
+<svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>
+<div>${next?`<b>Unlocks in <span data-countdown="${i}">${countdown(at-now)}</span></b><span>${esc(fmtDay(at))}, ${esc(fmtTime(at))}</span>`:`<b>Unlocks ${esc(fmtDay(at))}</b><span>${esc(fmtTime(at))}</span>`}</div>
+</div>
+</div>`;
+}
+
+const rows=topics.map((t,k)=>{
+const href=safeLink(t.link);
+return href
+?`<li style="--ti:${k}"><a class="topic" href="${esc(href)}" target="_blank" rel="noopener"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><svg class="ico t-go" aria-hidden="true"><use href="#i-drive"/></svg></a></li>`
+:`<li style="--ti:${k}"><span class="topic soon"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><span class="t-soon">Soon</span></span></li>`;
+}).join("");
+return head+`<ul class="topics">${rows}</ul>`;
+};
+
+const trackEl=$("#hTrack");
+trackEl.innerHTML=days.map(d=>`<article class="box hcard reveal" id="day-${esc(d.day)}"></article>`).join("");
+const cardEls=[...trackEl.children];
 $("#dayPills").innerHTML=days.map((d,i)=>`<button type="button" data-i="${i}" aria-label="Day ${esc(d.day)}: ${esc(d.title)}">${esc(d.day)}</button>`).join("");
+const pillEls=[...$("#dayPills").children];
+
+let lockState=[];
+const renderDays=()=>{
+const now=new Date();
+days.forEach((d,i)=>{
+const locked=now<unlocks[i];
+const isNew=!locked&&now-unlocks[i]<DAY_MS;
+const key=`${locked}|${isNew}|${unlocks.findIndex(u=>now<u)}`;
+if(lockState[i]===key)return;
+lockState[i]=key;
+cardEls[i].innerHTML=cardHTML(d,i,now);
+cardEls[i].classList.toggle("is-locked",locked);
+pillEls[i].classList.toggle("is-locked",locked);
+});
+};
+renderDays();
+
+// tick the countdown every second while any day is still locked
+if(unlocks.some(u=>new Date()<u)){
+const clock=setInterval(()=>{
+const now=new Date();
+renderDays();
+$$("[data-countdown]").forEach(el=>{el.textContent=countdown(unlocks[+el.dataset.countdown]-now)});
+if(!unlocks.some(u=>now<u))clearInterval(clock);
+},1000);
+}
 
 // ---------- Text splitting ----------
 const title=$("#heroTitle");
@@ -182,7 +247,6 @@ bar.style.transform=`scaleX(${docH>vh?clamp(y/(docH-vh)):0})`;
 if(y<heroH+200){
 const hp=clamp(y/heroH);
 heroFx.style.setProperty("--sy",y.toFixed(1));
-heroFx.style.setProperty("--hp",hp.toFixed(3));
 hero3d?.setScroll(hp);
 }
 
@@ -357,6 +421,56 @@ requestAnimationFrame(()=>heroArt.classList.add("webgl-ready"));
 if(document.readyState==="complete")setTimeout(load,50);
 else addEventListener("load",()=>setTimeout(load,50),{once:true});
 }
+
+// ---------- Prism: follows the cursor, beam in from the left, rays fan out ----------
+(()=>{
+const beam=$("#pBeam"),prism=$("#pPrism"),rays=$$("#prismFx .ray");
+const gBeam=$("#gBeam"),gRays=rays.map((_,i)=>$("#gRay"+i));
+const ANGLES=[-26,-14,-3,9,21].map(a=>a*Math.PI/180);
+let w=0,h=0,left=0,docTop=0,x=0,y=0,tx=null,ty=null,frame=0,inView=true;
+const t0=performance.now();
+
+const set=(el,o)=>{for(const k in o)el.setAttribute(k,o[k])};
+const measureFx=()=>{
+const r=heroFx.getBoundingClientRect();
+w=r.width;h=r.height;left=r.left;docTop=r.top+scrollY;
+};
+const idle=t=>[w*.64+Math.sin(t*.35)*w*.07,h*.8+Math.sin(t*.6)*h*.05];
+
+const draw=()=>{
+const a={x1:0,y1:y.toFixed(1),x2:x.toFixed(1),y2:y.toFixed(1)};
+set(beam,a);set(gBeam,a);
+prism.setAttribute("transform",`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+const reach=Math.max(w-x,240)+240;
+rays.forEach((r,i)=>{
+const o={x1:(x+16).toFixed(1),y1:y.toFixed(1),x2:(x+Math.cos(ANGLES[i])*reach).toFixed(1),y2:(y+Math.sin(ANGLES[i])*reach).toFixed(1)};
+set(r,o);set(gRays[i],o);
+});
+};
+
+const tick=now=>{
+frame=0;
+const [ix,iy]=idle((now-t0)/1000);
+x+=((tx??ix)-x)*.3;
+y+=((ty??iy)-y)*.3;
+draw();
+run();
+};
+const run=()=>{if(!frame&&inView&&!document.hidden&&!reduceMotion)frame=requestAnimationFrame(tick)};
+
+measureFx();
+[x,y]=idle(0);
+draw();
+addEventListener("resize",measureFx);
+document.addEventListener("visibilitychange",run);
+new IntersectionObserver(([e])=>{inView=e.isIntersecting;if(inView){measureFx();run()}}).observe(hero);
+
+if(finePointer&&!reduceMotion){
+hero.addEventListener("pointermove",e=>{tx=e.clientX-left;ty=e.clientY+scrollY-docTop});
+hero.addEventListener("pointerleave",()=>{tx=ty=null});
+}
+run();
+})();
 
 if(reduceMotion||!finePointer)return;
 
