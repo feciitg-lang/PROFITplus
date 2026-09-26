@@ -25,6 +25,36 @@ nav.addEventListener("click",e=>{if(e.target.closest("a"))setMenu(false)});
 document.addEventListener("click",e=>{if(!e.target.closest("header"))setMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
 
+// ---------- Curriculum: rendered from curriculum.js ----------
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeLink=u=>/^https:\/\//i.test(u||"")?u:"";
+const days=Array.isArray(window.PROFIT_CURRICULUM)?window.PROFIT_CURRICULUM:[];
+
+$("#hTrack").innerHTML=days.map(d=>{
+const topics=d.topics||[];
+const live=topics.filter(t=>safeLink(t.link)).length;
+const rows=topics.map((t,i)=>{
+const href=safeLink(t.link);
+return href
+?`<li style="--ti:${i}"><a class="topic" href="${esc(href)}" target="_blank" rel="noopener"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><svg class="ico t-go" aria-hidden="true"><use href="#i-drive"/></svg></a></li>`
+:`<li style="--ti:${i}"><span class="topic soon"><span class="t-bullet"></span><span class="t-name">${esc(t.name)}</span><span class="t-soon">Soon</span></span></li>`;
+}).join("");
+return `<article class="box hcard reveal" id="day-${esc(d.day)}">
+<span class="hnum" aria-hidden="true">${esc(String(d.day).padStart(2,"0"))}</span>
+<div class="hcard-top">
+<div class="hcard-meta"><span class="day-pill">DAY ${esc(d.day)}</span><span class="status${live?" on":""}">${live?`<i></i>${live}/${topics.length} live`:"Opens soon"}</span></div>
+<span class="f-ico"><img src="icons/${esc(d.icon)}.svg" alt="" width="28" height="28"></span>
+</div>
+<div class="hcard-body">
+<h4>${esc(d.title)}</h4>
+<p>${esc(d.summary)}</p>
+</div>
+<ul class="topics">${rows}</ul>
+</article>`;
+}).join("");
+
+$("#dayPills").innerHTML=days.map((d,i)=>`<button type="button" data-i="${i}" aria-label="Day ${esc(d.day)}: ${esc(d.title)}">${esc(d.day)}</button>`).join("");
+
 // ---------- Text splitting ----------
 const title=$("#heroTitle");
 title.setAttribute("aria-label","PROFIT+");
@@ -115,7 +145,7 @@ const marquee=$("#marquee");
 const hSection=$("#curriculum");
 const hTrack=$("#hTrack");
 const hCards=$$(".hcard");
-const dayCounter=$("#dayCounter");
+const pillBtns=$$("#dayPills button");
 const dayMeter=$("#dayMeter");
 const footer=$("#footer");
 const giantFill=$(".giant-fill");
@@ -174,7 +204,7 @@ if(Math.abs(d)<best){best=Math.abs(d);day=i+1}
 c.style.setProperty("--cry",(d*-28).toFixed(2)+"deg");
 c.style.setProperty("--ctz",(-Math.abs(d)*160).toFixed(1)+"px");
 });
-if(day!==lastDay){dayCounter.textContent=`DAY 0${day} / 06`;lastDay=day}
+if(day!==lastDay){pillBtns.forEach((b,i)=>b.classList.toggle("active",i===day-1));lastDay=day}
 dayMeter.style.transform=`scaleX(${p.toFixed(3)})`;
 }
 
@@ -188,6 +218,30 @@ else ticking=false;
 
 const kick=()=>{if(!ticking){ticking=true;requestAnimationFrame(frame)}};
 addEventListener("scroll",kick,{passive:true});
+
+// on the stacked (mobile) layout, highlight the pill of the card in view
+const pillSpy=new IntersectionObserver(entries=>{
+if(hMode)return;
+entries.forEach(e=>{
+if(e.isIntersecting)pillBtns.forEach((b,i)=>b.classList.toggle("active",hCards[i]===e.target));
+});
+},{rootMargin:"-45% 0px -50% 0px"});
+hCards.forEach(c=>pillSpy.observe(c));
+
+// day pills jump to a card (in the horizontal track or the stacked mobile list)
+$("#dayPills").addEventListener("click",e=>{
+const b=e.target.closest("button");
+if(!b)return;
+const i=+b.dataset.i;
+const behavior=reduceMotion?"auto":"smooth";
+if(hMode&&trackMax>0){
+const top=hSection.getBoundingClientRect().top+scrollY;
+const p=clamp((cardCenters[i]-innerWidth/2)/trackMax);
+scrollTo({top:top+p*(hSection.offsetHeight-vh),behavior});
+}else{
+hCards[i].scrollIntoView({behavior,block:"center"});
+}
+});
 addEventListener("resize",()=>{measure();kick()});
 wideQuery.addEventListener("change",()=>{measure();kick()});
 document.fonts.ready.then(()=>{measure();kick()});
