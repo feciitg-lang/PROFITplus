@@ -422,45 +422,77 @@ if(document.readyState==="complete")setTimeout(load,50);
 else addEventListener("load",()=>setTimeout(load,50),{once:true});
 }
 
-// ---------- Prism: follows the cursor, beam in from the left, rays fan out ----------
+// ---------- Live candle: follows the cursor, beam in from the left, rays fan out ----------
+// Moving up paints a green (bull) candle, moving down a red (bear) one; speed stretches the body.
+// The price tag reads higher on screen as a gain, lower as a loss.
+// Everything fades toward the left edge so the hero text stays readable.
+// Rays and candle are moved with transforms only, so nothing large is repainted per frame.
 (()=>{
-const beam=$("#pBeam"),prism=$("#pPrism"),rays=$$("#prismFx .ray");
-const gBeam=$("#gBeam"),gRays=rays.map((_,i)=>$("#gRay"+i));
-const ANGLES=[-26,-14,-3,9,21].map(a=>a*Math.PI/180);
-let w=0,h=0,left=0,docTop=0,x=0,y=0,tx=null,ty=null,frame=0,inView=true;
+const raysEl=$("#rays"),top=$("#candleTop");
+const body=$("#pBody"),wick=$("#pWick"),tagBg=$("#pTagBg"),tagText=$("#pTagText");
+const glowStop=$("#pGlowStop"),glowEnd=glowStop.nextElementSibling;
+const UP=[62,224,143],DOWN=[255,92,122];
+let w=0,h=0,left=0,docTop=0,offX=0,offY=0,x=0,y=0,tx=null,ty=null,frame=0,inView=true;
+let trend=1,speed=0,lastY=0,lastPct="",lastOp="",lastLook="";
 const t0=performance.now();
 
-const set=(el,o)=>{for(const k in o)el.setAttribute(k,o[k])};
 const measureFx=()=>{
-const r=heroFx.getBoundingClientRect();
+const r=heroFx.getBoundingClientRect(),hr=hero.getBoundingClientRect();
 w=r.width;h=r.height;left=r.left;docTop=r.top+scrollY;
+offX=r.left-hr.left;offY=r.top-hr.top;
 };
 const idle=t=>[w*.64+Math.sin(t*.35)*w*.07,h*.8+Math.sin(t*.6)*h*.05];
+const mix=k=>UP.map((u,i)=>Math.round(DOWN[i]+(u-DOWN[i])*k)).join(",");
 
-const draw=()=>{
-const a={x1:0,y1:y.toFixed(1),x2:x.toFixed(1),y2:y.toFixed(1)};
-set(beam,a);set(gBeam,a);
-prism.setAttribute("transform",`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-const reach=Math.max(w-x,240)+240;
-rays.forEach((r,i)=>{
-const o={x1:(x+16).toFixed(1),y1:y.toFixed(1),x2:(x+Math.cos(ANGLES[i])*reach).toFixed(1),y2:(y+Math.sin(ANGLES[i])*reach).toFixed(1)};
-set(r,o);set(gRays[i],o);
-});
+const render=()=>{
+raysEl.style.transform=`translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+top.style.transform=`translate3d(${(x+offX-110).toFixed(1)}px,${(y+offY-100).toFixed(1)}px,0)`;
+
+const op=clamp((x/w-.12)/.36,.12,1).toFixed(2);
+if(op!==lastOp){raysEl.style.opacity=top.style.opacity=lastOp=op}
+
+// candle colour + body height (only touched when they visibly change)
+const rgb=`rgb(${mix((trend+1)/2)})`;
+const bh=(36+speed*30).toFixed(0);
+const look=rgb+bh;
+if(look!==lastLook){
+lastLook=look;
+body.setAttribute("y",-bh/2);
+body.setAttribute("height",bh);
+body.setAttribute("fill",rgb);
+wick.setAttribute("y1",-bh/2-16);
+wick.setAttribute("y2",bh/2+16);
+wick.setAttribute("stroke",rgb);
+glowStop.setAttribute("stop-color",rgb);
+glowEnd.setAttribute("stop-color",rgb);
+}
+
+const pct=((.5-y/h)*10).toFixed(2);
+if(pct!==lastPct){
+lastPct=pct;
+tagText.textContent=(pct>=0?"+":"")+pct+"%";
+tagBg.setAttribute("fill",pct>=0?"#3ee08f":"#ff5c7a");
+}
 };
 
-const tick=now=>{
+const step=now=>{
 frame=0;
 const [ix,iy]=idle((now-t0)/1000);
 x+=((tx??ix)-x)*.3;
 y+=((ty??iy)-y)*.3;
-draw();
+const dy=y-lastY;
+lastY=y;
+if(Math.abs(dy)>.3)trend+=(clamp(-dy/3,-1,1)-trend)*.15;
+speed+=(clamp(Math.abs(dy)/14)-speed)*.12;
+render();
 run();
 };
-const run=()=>{if(!frame&&inView&&!document.hidden&&!reduceMotion)frame=requestAnimationFrame(tick)};
+const run=()=>{if(!frame&&inView&&!document.hidden&&!reduceMotion)frame=requestAnimationFrame(step)};
 
 measureFx();
 [x,y]=idle(0);
-draw();
+lastY=y;
+render();
 addEventListener("resize",measureFx);
 document.addEventListener("visibilitychange",run);
 new IntersectionObserver(([e])=>{inView=e.isIntersecting;if(inView){measureFx();run()}}).observe(hero);

@@ -24,7 +24,7 @@
 */
 
 window.PROFIT_ROLLOUT = {
-start: "2026-09-28",
+start: "2026-09-27",
 time: "00:00"
 };
 

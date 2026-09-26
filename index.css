@@ -520,8 +520,22 @@ animation:bob var(--dur) ease-in-out infinite alternate;
 100%{transform:translate(18px,-26px) rotate(120deg)}
 }
 
-.prism-fx{position:absolute;inset:0;overflow:visible}
-.prism-fx .ray,#pBeam{opacity:.85}
+/* beam + rays are drawn once and moved as one layer (transform only, no repaint) */
+.rays{position:absolute;left:0;top:0;will-change:transform,opacity}
+.rays i{position:absolute;top:-.75px;height:1.5px;transform-origin:0 50%}
+.rays .ray{left:16px;width:1900px;transform:rotate(var(--a));background:linear-gradient(90deg,var(--c),transparent);opacity:.85}
+.rays .beam-in{right:10px;width:2200px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5) 55%,rgba(255,255,255,.9))}
+#pTagText{font-family:var(--mono);font-size:11px;font-weight:700;fill:#03060f}
+#pTagBg{fill-opacity:.95}
+.candle-top{
+position:absolute;
+left:0;
+top:0;
+overflow:visible;
+pointer-events:none;
+z-index:3;
+will-change:transform,opacity;
+}
 
 /* ---------- Marquee ---------- */
 
