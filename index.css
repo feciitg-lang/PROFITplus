@@ -661,7 +661,7 @@ margin:0;
 .bento{
 display:grid;
 grid-template-columns:repeat(4,minmax(0,1fr));
-grid-auto-rows:minmax(160px,auto);
+grid-auto-rows:auto;
 gap:18px;
 }
 
@@ -969,8 +969,8 @@ animation:shimmer 2.6s ease-in-out infinite;
 
 /* ---------- Outcome ---------- */
 
-.project{display:flex;flex-direction:column}
-.steps-list{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.project{display:flex;flex-direction:column;justify-content:space-between}
+.steps-list{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .steps-list li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:15px}
 .steps-list b{font-family:var(--mono);color:var(--ice);font-size:12px}
 
@@ -978,8 +978,7 @@ animation:shimmer 2.6s ease-in-out infinite;
 display:flex;
 flex-direction:column;
 justify-content:space-between;
-gap:18px;
-min-height:300px;
+gap:14px;
 background:linear-gradient(135deg,#3f78ff,#1238c9 55%,#081459);
 }
 
@@ -1024,8 +1023,9 @@ gap:18px;
 counter-reset:step;
 }
 
-.join-steps .box{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-height:260px}
-.join-steps .box p{margin-bottom:auto;padding-bottom:18px}
+.join-steps .box{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px}
+.step-head{display:flex;align-items:center;gap:12px}
+.step-head h3{margin:0;font-size:19px}
 
 .step-no{
 font-family:var(--mono);
@@ -1037,7 +1037,6 @@ padding:6px 12px;
 border-radius:999px;
 background:rgba(47,107,255,.14);
 border:1px solid rgba(156,193,255,.2);
-margin-bottom:14px;
 }
 
 .date-badge{
@@ -1202,7 +1201,6 @@ backdrop-filter:blur(12px) saturate(140%);
 .stat-cell:nth-child(2){border-radius:0 var(--radius) 0 0}
 .stat-cell:last-child{border-radius:0 0 var(--radius) var(--radius)}
 .join-steps{grid-template-columns:1fr}
-.join-steps .box{min-height:0}
 .faq-wrap{grid-template-columns:1fr}
 .faq-wrap .section-head{position:static}
 }
