@@ -449,9 +449,10 @@ maxX=hr.right-r.left-24;
 edgeX=hr.right-r.left-110;
 };
 // idle path when nobody is steering: a wide left-right sweep so the candle visibly grows/shrinks
+let phX=0,phY=0,follow=.3;
 const idle=finePointer
 ?t=>[w*(.62+.14*Math.sin(t*.45)),h*(.78+.05*Math.sin(t*.8))]
-:t=>[w*(.52+.3*Math.sin(t*.55)),h*(.74+.05*Math.sin(t*.9))];
+:t=>[w*(.52+.3*Math.sin(t*.55+phX)),h*(.74+.05*Math.sin(t*.9+phY))];
 const mix=k=>UP.map((u,i)=>Math.round(DOWN[i]+(u-DOWN[i])*k)).join(",");
 
 const render=()=>{
@@ -492,8 +493,9 @@ tagBg.setAttribute("fill",pct>=0?"#3ee08f":"#ff5c7a");
 const step=now=>{
 frame=0;
 const [ix,iy]=idle((now-t0)/1000);
-x+=((tx??ix)-x)*.3;
-y+=((ty??iy)-y)*.3;
+follow+=(.3-follow)*.03;
+x+=((tx??ix)-x)*follow;
+y+=((ty??iy)-y)*follow;
 const dx=x-lastX;
 lastX=x;
 if(Math.abs(dx)>.3)trend+=(Math.sign(dx)-trend)*.2;
@@ -518,14 +520,14 @@ hero.addEventListener("pointerleave",()=>{tx=ty=null});
 }else if(!reduceMotion){
 // touch: grab the candle to drag it; anywhere else still scrolls the page
 const hit=$("#pHit");
-let dragging=false,release=0;
+let dragging=false;
 top.classList.add("hint");
 hit.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
 hit.addEventListener("pointerdown",e=>{
 dragging=true;
-clearTimeout(release);
 top.classList.remove("hint");
 hit.setPointerCapture(e.pointerId);
+follow=.3;
 measureFx();
 aim(e);
 run();
@@ -534,7 +536,12 @@ hit.addEventListener("pointermove",e=>{if(dragging)aim(e)});
 const drop=()=>{
 if(!dragging)return;
 dragging=false;
-release=setTimeout(()=>{tx=ty=null},2500);
+// resume the sweep right away, starting from where the candle was dropped
+const t=(performance.now()-t0)/1000;
+phX=Math.asin(clamp((x/w-.52)/.3,-1,1))-t*.55;
+phY=Math.asin(clamp((y/h-.74)/.05,-1,1))-t*.9;
+follow=.05;
+tx=ty=null;
 };
 hit.addEventListener("pointerup",drop);
 hit.addEventListener("pointercancel",drop);
