@@ -24,7 +24,7 @@
 */
 
 window.PROFIT_ROLLOUT = {
-start: "2026-09-27",
+start: "2026-09-28",
 time: "00:00"
 };
 
@@ -35,7 +35,7 @@ title: "Market Foundation",
 summary: "Stock markets, exchanges, orders and trading basics.",
 icon: "market",
 topics: [
-{ name: "How stock markets work", link: "" },
+{ name: "How stock markets work", link: "https://drive.google.com/file/d/1slQtNjNXup1E30qytKiymizCKEW61-Av/view?usp=sharing" },
 { name: "Exchanges", link: "" },
 { name: "Order types", link: "" },
 { name: "Trading basics", link: "" }
