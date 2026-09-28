@@ -44,7 +44,7 @@ title: "Technical Analysis",
 summary: "Candlesticks, trends, indicators and chart reading.",
 icon: "chart",
 topics: [
-{ name: "Day 2", link: "" }
+{ name: "Day 2", link: "https://drive.google.com/file/d/14q1iu5vtMoDj-4FwLfSHLe7H85a0b4Tm/view?usp=sharing" }
 ]
 },
 {
