@@ -19,8 +19,8 @@
     add  unlock: "2026-10-01 18:00"  to that day.
     Until a day unlocks, its topics are hidden behind a countdown.
 
-  NOTE: the topics below are placeholders taken from the course outline.
-  Replace them with the real topics and Drive links.
+  Each day has one entry ("Day N"). Paste that day's Drive link into it
+  when the material is ready.
 */
 
 window.PROFIT_ROLLOUT = {
@@ -35,10 +35,7 @@ title: "Market Foundation",
 summary: "Stock markets, exchanges, orders and trading basics.",
 icon: "market",
 topics: [
-{ name: "How stock markets work", link: "https://drive.google.com/file/d/1slQtNjNXup1E30qytKiymizCKEW61-Av/view?usp=sharing" },
-{ name: "Exchanges", link: "" },
-{ name: "Order types", link: "" },
-{ name: "Trading basics", link: "" }
+{ name: "Day 1", link: "https://drive.google.com/file/d/15OYQFmslowov7n2PKnsj59l73oMVIovd/view?usp=sharing" }
 ]
 },
 {
@@ -47,10 +44,7 @@ title: "Technical Analysis",
 summary: "Candlesticks, trends, indicators and chart reading.",
 icon: "chart",
 topics: [
-{ name: "Candlesticks", link: "" },
-{ name: "Trends", link: "" },
-{ name: "Indicators", link: "" },
-{ name: "Chart reading", link: "" }
+{ name: "Day 2", link: "" }
 ]
 },
 {
@@ -59,9 +53,7 @@ title: "Trading Strategy",
 summary: "Entry rules, exits and building a trading plan.",
 icon: "strategy",
 topics: [
-{ name: "Entry rules", link: "" },
-{ name: "Exits", link: "" },
-{ name: "Building a trading plan", link: "" }
+{ name: "Day 3", link: "" }
 ]
 },
 {
@@ -70,8 +62,7 @@ title: "Risk Management",
 summary: "Capital protection and disciplined execution.",
 icon: "risk",
 topics: [
-{ name: "Capital protection", link: "" },
-{ name: "Disciplined execution", link: "" }
+{ name: "Day 4", link: "" }
 ]
 },
 {
@@ -80,9 +71,7 @@ title: "Trading Psychology",
 summary: "Emotions, patience and professional mindset.",
 icon: "psychology",
 topics: [
-{ name: "Emotions", link: "" },
-{ name: "Patience", link: "" },
-{ name: "Professional mindset", link: "" }
+{ name: "Day 5", link: "" }
 ]
 },
 {
@@ -91,8 +80,7 @@ title: "Final Challenge",
 summary: "Create and present your own trading framework.",
 icon: "trophy",
 topics: [
-{ name: "Create your trading framework", link: "" },
-{ name: "Present your approach", link: "" }
+{ name: "Day 6", link: "" }
 ]
 }
 ];
