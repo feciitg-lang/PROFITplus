@@ -53,7 +53,7 @@ title: "Trading Strategy",
 summary: "Entry rules, exits and building a trading plan.",
 icon: "strategy",
 topics: [
-{ name: "Day 3", link: "" }
+{ name: "Day 3", link: "https://drive.google.com/file/d/1bq5S69Wf2utAxZRYU-qPVPriwQy_TKch/view?usp=sharing" }
 ]
 },
 {
