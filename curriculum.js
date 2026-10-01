@@ -62,7 +62,7 @@ title: "Risk Management",
 summary: "Capital protection and disciplined execution.",
 icon: "risk",
 topics: [
-{ name: "Day 4", link: "" }
+{ name: "Day 4", link: "https://drive.google.com/file/d/1gchb3zk1pDQ6V-s5Sjqgidkaf0V7B8rW/view?usp=drivesdk" }
 ]
 },
 {
