@@ -71,7 +71,7 @@ title: "Trading Psychology",
 summary: "Emotions, patience and professional mindset.",
 icon: "psychology",
 topics: [
-{ name: "Day 5", link: "" }
+{ name: "Day 5", link: "https://drive.google.com/file/d/15PqhKHLPfMUcnPixLiYVdRGQIef1lw2f/view?usp=drivesdk" }
 ]
 },
 {
