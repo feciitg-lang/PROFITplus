@@ -80,7 +80,7 @@ title: "Final Challenge",
 summary: "Create and present your own trading framework.",
 icon: "trophy",
 topics: [
-{ name: "Day 6", link: "" }
+{ name: "Day 6", link: "https://drive.google.com/file/d/1L30Uq3GreZYAyFhU99phhHCMd6mX0O-z/view?usp=drive_link" }
 ]
 }
 ];
